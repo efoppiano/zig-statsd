@@ -180,6 +180,26 @@ pub const StatsDClient = struct {
         try self.stream.writeAll(metric);
     }
 
+    pub fn gauge_incr(self: Self, metric_name: []const u8, amount: f64) !void {
+        const amount_str = try self.number_to_str(amount);
+        defer self.allocator.free(amount_str);
+
+        const metric = try self.alloc_metric(&[_][]const u8{metric_name, ":+", amount_str, "|g" });
+        defer self.allocator.free(metric);
+
+        try self.stream.writeAll(metric);
+    }
+
+    pub fn gauge_decr(self: Self, metric_name: []const u8, amount: f64) !void {
+        const amount_str = try self.number_to_str(amount);
+        defer self.allocator.free(amount_str);
+
+        const metric = try self.alloc_metric(&[_][]const u8{metric_name, ":-", amount_str, "|g" });
+        defer self.allocator.free(metric);
+
+        try self.stream.writeAll(metric);
+    }
+
     fn should_sample(self: *Self, rate: f64) bool {
         return self.rand.next_f64() < rate;
     }
