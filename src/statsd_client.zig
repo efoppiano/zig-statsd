@@ -60,6 +60,7 @@ pub const StatsDClient = struct {
             const prefix = try config.allocator.alloc(u8, pr.len);
             std.mem.copy(u8, prefix, pr);
             ret.prefix = prefix;
+            std.debug.print("prefix: {s}\n", .{ret.prefix.?});
         } else {
             ret.prefix = null;
         }
@@ -102,7 +103,7 @@ pub const StatsDClient = struct {
             errdefer self.allocator.free(buf);
 
             std.mem.copy(u8, buf, prefix);
-            std.mem.copy(u8, buf, ".");
+            std.mem.copy(u8, buf[prefix.len..], ".");
             var buf_index: usize = prefix.len + 1;
             for (slices) |slice| {
                 std.mem.copy(u8, buf[buf_index..], slice);
@@ -159,13 +160,7 @@ pub const StatsDClient = struct {
 
     /// Send a timer with <value>, in ms
     pub fn timer(self: Self, metric_name: []const u8, value: f64) !void {
-        const value_str = try self.number_to_str(value);
-        defer self.allocator.free(value_str);
-
-        const metric = try self.alloc_metric(&[_][]const u8{ metric_name, ":", value_str, "|ms" });
-        defer self.allocator.free(metric);
-
-        try self.stream.writeAll(metric);
+        return self.send_sampled_timer(metric_name, value, null);
     }
 
     /// Send a timer with <value>, in ms, only <rate>*100% of the time
