@@ -60,7 +60,6 @@ pub const StatsDClient = struct {
             const prefix = try config.allocator.alloc(u8, pr.len);
             std.mem.copy(u8, prefix, pr);
             ret.prefix = prefix;
-            std.debug.print("prefix: {s}\n", .{ret.prefix.?});
         } else {
             ret.prefix = null;
         }
