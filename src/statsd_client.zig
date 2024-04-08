@@ -51,7 +51,7 @@ pub const StatsDClient = struct {
         const stream = try Self.create_udp_stream(config.host, config.port);
         errdefer stream.close();
 
-        return Self.init_with_stream(config.prefix, stream, config.allocator);
+        return try Self.init_with_stream(config.prefix, stream, config.allocator);
     }
 
     pub fn init_with_stream(prefix: ?[]const u8, stream: net.Stream, allocator: Allocator) !Self {
