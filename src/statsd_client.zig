@@ -45,6 +45,8 @@ pub const StatsDClient = struct {
 
     /// Creates a new client that sends metrics over UDP
     /// The metrics will be sent one by one
+    /// Creates a new client that sends metrics over UDP
+    /// The metrics will be sent one by one
     pub fn init(config: StatsDConfig) !Self {
         var ret: Self = undefined;
 
@@ -118,12 +120,12 @@ pub const StatsDClient = struct {
         return std.fmt.allocPrint(self.allocator, "{d}", .{a});
     }
 
-    /// Modify a counter by <value>
+    /// Modify a counter by `value`
     pub fn count(self: Self, metric_name: []const u8, value: f64) !void {
         return self.send_sampled_count(metric_name, value, null);
     }
 
-    /// Modify a counter by <value> only <rate>*100% of the time
+    /// Modify a counter by `value` only `rate`*100% of the time
     pub fn sampled_count(self: *Self, metric_name: []const u8, value: f64, rate: f64) !void {
         if (self.should_sample(rate)) {
             return self.send_sampled_count(metric_name, value, rate);
@@ -157,12 +159,12 @@ pub const StatsDClient = struct {
         return self.count(metric_name, -1.0);
     }
 
-    /// Send a timer with <value>, in ms
+    /// Send a timer with `value`, in ms
     pub fn timer(self: Self, metric_name: []const u8, value: f64) !void {
         return self.send_sampled_timer(metric_name, value, null);
     }
 
-    /// Send a timer with <value>, in ms, only <rate>*100% of the time
+    /// Send a timer with `value`, in ms, only `rate`*100% of the time
     pub fn sampled_timer(self: *Self, metric_name: []const u8, value: f64, rate: f64) !bool {
         if (self.should_sample(rate)) {
             return self.send_sampled_timer(metric_name, value, rate);
@@ -185,7 +187,7 @@ pub const StatsDClient = struct {
         try self.stream.writeAll(metric);
     }
 
-    /// Set a gauge to <value>
+    /// Set a gauge to `value`
     pub fn gauge(self: Self, metric_name: []const u8, value: f64) !void {
         const value_str = try self.number_to_str(value);
         defer self.allocator.free(value_str);
@@ -196,7 +198,7 @@ pub const StatsDClient = struct {
         try self.stream.writeAll(metric);
     }
 
-    /// Increment a gauge by <value>
+    /// Increment a gauge by `value`
     pub fn gauge_incr(self: Self, metric_name: []const u8, amount: f64) !void {
         const amount_str = try self.number_to_str(amount);
         defer self.allocator.free(amount_str);
@@ -207,7 +209,7 @@ pub const StatsDClient = struct {
         try self.stream.writeAll(metric);
     }
 
-    /// Decrement a gauge by <value>
+    /// Decrement a gauge by `value`
     pub fn gauge_decr(self: Self, metric_name: []const u8, amount: f64) !void {
         const amount_str = try self.number_to_str(amount);
         defer self.allocator.free(amount_str);
