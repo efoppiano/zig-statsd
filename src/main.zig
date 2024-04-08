@@ -14,14 +14,14 @@ const Rng = struct {
 
     pub fn next(self: *Rng) u32 {
         const ret = self.prev;
-        self.prev = (1664525 * self.prev + 1013904223) % (1 << 31);
+        self.prev = (1664525 * self.prev + 1013904223) % (1 << 32);
         return @truncate(ret);
     }
 
     pub fn next_f64(self: *Rng) f64 {
         const n = self.next();
         const n_f32: f32 = @floatFromInt(n);
-        return @as(f64, n_f32/(1 << 31));
+        return @as(f64, n_f32/(1 << 32));
     }
 };
 
