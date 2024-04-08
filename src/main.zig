@@ -29,6 +29,7 @@ pub const StatsDClient = struct {
 
     pub fn deinit(self: Self) void {
         self.allocator.free(self.prefix);
+        self.stream.close();
     }
 
     fn create_udp_stream(host: []const u8, port: u16) !net.Stream {
