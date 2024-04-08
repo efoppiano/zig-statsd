@@ -65,7 +65,7 @@ pub const StatsDClient = struct {
         if (prefix) |pr| {
             const prefix_alloc = try allocator.alloc(u8, pr.len);
             std.mem.copy(u8, prefix_alloc, pr);
-            ret.prefix = prefix;
+            ret.prefix = prefix_alloc;
         } else {
             ret.prefix = null;
         }

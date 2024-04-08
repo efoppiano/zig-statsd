@@ -81,3 +81,10 @@ test "StatsDClient.gauge_decr should work" {
 	try test_client.client.gauge_decr("my_gauge", 5000);
 	try test_client.assert_received("my_gauge:-5000|g");
 }
+
+test "StatsDClient appends the prefix at the start of the metric, if not null" {
+	var test_client = try TestClient.init("my_prefix");
+	defer test_client.deinit();
+	try test_client.client.count("my_counter", 114);
+	try test_client.assert_received("my_prefix.my_counter:114|c");
+}
