@@ -48,19 +48,23 @@ pub const StatsDClient = struct {
     /// Creates a new client that sends metrics over UDP
     /// The metrics will be sent one by one
     pub fn init(config: StatsDConfig) !Self {
-        var ret: Self = undefined;
-
         const stream = try Self.create_udp_stream(config.host, config.port);
         errdefer stream.close();
+
+        return Self.init_with_stream(config.prefix, stream, config.allocator);
+    }
+
+    pub fn init_with_stream(prefix: ?[]const u8, stream: net.Stream, allocator: Allocator) !Self {
+        var ret: Self = undefined;
 
         ret.rand = try Self.create_prng();
 
         ret.stream = stream;
-        ret.allocator = config.allocator;
+        ret.allocator = allocator;
 
-        if (config.prefix) |pr| {
-            const prefix = try config.allocator.alloc(u8, pr.len);
-            std.mem.copy(u8, prefix, pr);
+        if (prefix) |pr| {
+            const prefix_alloc = try allocator.alloc(u8, pr.len);
+            std.mem.copy(u8, prefix_alloc, pr);
             ret.prefix = prefix;
         } else {
             ret.prefix = null;
