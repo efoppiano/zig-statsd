@@ -29,3 +29,7 @@ client.gauge_incr("my.gauge", 2.0);
 // Send a timer of 15 ms
 client.timer("my.timer", 15.0);
 ```
+
+## License
+
+Licenesed under the [MIT License](LICENSE).
