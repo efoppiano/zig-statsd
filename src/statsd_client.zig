@@ -125,7 +125,7 @@ pub const StatsDClient = struct {
 
     /// Modify a counter by <value> only <rate>*100% of the time
     pub fn sampled_count(self: *Self, metric_name: []const u8, value: f64, rate: f64) !void {
-        if (self.should_sample()) {
+        if (self.should_sample(rate)) {
             return self.send_sampled_count(metric_name, value, rate);
         }
     }
