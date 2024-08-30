@@ -32,4 +32,4 @@ client.timer("my.timer", 15.0);
 
 ## License
 
-Licenesed under the [MIT License](LICENSE).
+Licensed under the [MIT License](LICENSE).
