@@ -4,10 +4,31 @@ A client implementation of StatsD in Zig.
 
 ## Using the library
 
-Copy the [src/statsd_client.zig](src/statsd_client.zig) file into your project and import it
+### Zigmod
+
+Install the library using [zigmod](https://github.com/nektro/zigmod/)
+
+```bash
+zigmod aq add 1/efoppiano/zig-statsd-client
+```
+
+Then import the library in your project
+
+```zig
+const StatsDClient = @import("zig-statsd-client").StatsDClient;
+```
+
+### Manual
+
+Alternatively, you can copy the [src/statsd_client.zig](src/statsd_client.zig) file into your project and import it
 
 ```zig
 const StatsDClient = @import("statsd_client.zig").StatsDClient;
+```
+
+Now you can create a new client and start sending metrics
+
+```zig
 var client = try StatsDClient.init(.{.host="127.0.0.1", .port=8125, .prefix="my_app"});
 ```
 
