@@ -30,6 +30,10 @@ client.gauge_incr("my.gauge", 2.0);
 client.timer("my.timer", 15.0);
 ```
 
+## Compatibility
+
+This library is compatible with **Zig 0.13.0**
+
 ## License
 
 Licensed under the [MIT License](LICENSE).

@@ -1,5 +1,5 @@
 const std = @import("std");
-const os = std.os;
+const posix = std.posix;
 const net = std.net;
 const Allocator = std.mem.Allocator;
 
@@ -64,7 +64,7 @@ pub const StatsDClient = struct {
 
         if (prefix) |pr| {
             const prefix_alloc = try allocator.alloc(u8, pr.len);
-            std.mem.copy(u8, prefix_alloc, pr);
+            std.mem.copyForwards(u8, prefix_alloc, pr);
             ret.prefix = prefix_alloc;
         } else {
             ret.prefix = null;
@@ -83,15 +83,15 @@ pub const StatsDClient = struct {
 
     fn create_prng() !Rng {
         var seed: u64 = undefined;
-        try std.os.getrandom(std.mem.asBytes(&seed));
+        try std.posix.getrandom(std.mem.asBytes(&seed));
         return Rng.init(seed);
     }
 
     fn create_udp_stream(host: []const u8, port: u16) !net.Stream {
         const addr = try net.Address.resolveIp(host, port);
-        const fd = try os.socket(os.AF.INET, os.SOCK.DGRAM | os.SOCK.CLOEXEC, 0);
-        errdefer os.closeSocket(fd);
-        try os.connect(fd, &addr.any, addr.getOsSockLen());
+        const fd = try posix.socket(posix.AF.INET, posix.SOCK.DGRAM | posix.SOCK.CLOEXEC, 0);
+        errdefer posix.closeSocket(fd);
+        try posix.connect(fd, &addr.any, addr.getOsSockLen());
         return net.Stream{ .handle = fd };
     }
 
@@ -107,11 +107,11 @@ pub const StatsDClient = struct {
             const buf = try self.allocator.alloc(u8, buf_size);
             errdefer self.allocator.free(buf);
 
-            std.mem.copy(u8, buf, prefix);
-            std.mem.copy(u8, buf[prefix.len..], ".");
+            std.mem.copyForwards(u8, buf, prefix);
+            std.mem.copyForwards(u8, buf[prefix.len..], ".");
             var buf_index: usize = prefix.len + 1;
             for (slices) |slice| {
-                std.mem.copy(u8, buf[buf_index..], slice);
+                std.mem.copyForwards(u8, buf[buf_index..], slice);
                 buf_index += slice.len;
             }
             return buf;
