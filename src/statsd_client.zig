@@ -90,7 +90,7 @@ pub const StatsDClient = struct {
     fn create_udp_stream(host: []const u8, port: u16) !net.Stream {
         const addr = try net.Address.resolveIp(host, port);
         const fd = try posix.socket(posix.AF.INET, posix.SOCK.DGRAM | posix.SOCK.CLOEXEC, 0);
-        errdefer posix.closeSocket(fd);
+        errdefer posix.close(fd);
         try posix.connect(fd, &addr.any, addr.getOsSockLen());
         return net.Stream{ .handle = fd };
     }
