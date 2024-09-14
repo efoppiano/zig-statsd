@@ -1,5 +1,9 @@
 .zig-cache
 zig-out
+.zigmod
+deps.zig
+files.zig
+zigmod.lock
 
 .idea
 .vscode

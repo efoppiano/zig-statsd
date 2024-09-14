@@ -1,0 +1,6 @@
+id: nycqb3yd9ajzudclwa43weqf6iwxd25lg03jvcj5awx5ofq8
+name: zig-statsd-client
+main: src
+license: MIT
+description: A client implementation of StatsD in Zig
+dependencies:
